@@ -45,6 +45,20 @@ public class ModBlocks {
             )
     );
 
+    public static final Block CHICKEN_FEEDER = registerBlock(
+            "chicken_feeder",
+            new ChickenFeederBlock(
+                    BlockBehaviour.Properties.of()
+                            .setId(ResourceKey.create(
+                                    Registries.BLOCK,
+                                    Identifier.fromNamespaceAndPath(LiveStockHusbandry.MOD_ID, "chicken_feeder")
+                            ))
+                            .strength(2.0F)
+                            .sound(SoundType.WOOD)
+                            .noOcclusion()
+            )
+    );
+
     private static Block registerBlock(String name, Block block) {
         Identifier id = Identifier.fromNamespaceAndPath(LiveStockHusbandry.MOD_ID, name);
 
@@ -75,6 +89,7 @@ public class ModBlocks {
                 .register(output -> {
                     output.accept(CHICKEN_NEST);
                     output.accept(COLLECTION_CRATE);
+                    output.accept(CHICKEN_FEEDER);
                 });
     }
 }

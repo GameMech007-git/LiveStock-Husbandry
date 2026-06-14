@@ -25,6 +25,21 @@ public class ModBlockEntities {
                             .build()
             );
 
+    public static final BlockEntityType<ChickenFeederBlockEntity> CHICKEN_FEEDER =
+            Registry.register(
+                    BuiltInRegistries.BLOCK_ENTITY_TYPE,
+                    Identifier.fromNamespaceAndPath(
+                            LiveStockHusbandry.MOD_ID,
+                            "chicken_feeder"
+                    ),
+                    FabricBlockEntityTypeBuilder
+                            .create(
+                                    ChickenFeederBlockEntity::new,
+                                    ModBlocks.CHICKEN_FEEDER
+                            )
+                            .build()
+            );
+
     public static void registerModBlockEntities() {
         LiveStockHusbandry.LOGGER.info(
                 "Registering block entities for " + LiveStockHusbandry.MOD_ID
