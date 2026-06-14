@@ -1,18 +1,19 @@
 {
 	"schemaVersion": 1,
-	"id": "livestock-husbandry",
+	"id": "livestock_husbandry",
 	"version": "${version}",
 	"name": "LiveStock & Husbandry",
-	"description": "This is an example description! Tell everyone what your mod is about!",
+	"description": "A vanilla-style livestock mod adding chicken nests, animal troughs, and better farm animal behavior.!",
 	"authors": [
-		"Me!"
+		"GameMech007!"
 	],
 	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
+		"homepage": "https://modrinth.com/mod/LiveStock-Husbandry",
+		"sources": "https://github.com/GameMech007-git/LiveStock-Husbandry",
+		"issues": "https://github.com/GameMech007-git/LiveStock-Husbandry/issues"
 	},
-	"license": "CC0-1.0",
-	"icon": "assets/livestock-husbandry/icon.png",
+	"license": "GPL 3.0",
+	"icon": "assets/livestock_husbandry/icon.png",
 	"environment": "*",
 	"entrypoints": {
 		"main": [
@@ -23,9 +24,9 @@
 		]
 	},
 	"mixins": [
-		"livestock-husbandry.mixins.json",
+		"livestock_husbandry.mixins.json",
 		{
-			"config": "livestock-husbandry.client.mixins.json",
+			"config": "livestock_husbandry.client.mixins.json",
 			"environment": "client"
 		}
 	],

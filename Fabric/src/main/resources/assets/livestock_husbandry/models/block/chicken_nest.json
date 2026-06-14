@@ -1,0 +1,58 @@
+{
+	"format_version": "1.21.11",
+	"credit": "Made with Blockbench",
+	"textures": {
+		"0": "livestock_husbandry:block/chicken_nest",
+		"particle": "livestock_husbandry:block/chicken_nest"
+	},
+	"elements": [
+		{
+			"from": [1, 0, 1],
+			"to": [15, 6, 15],
+			"rotation": {"angle": 0, "axis": "y", "origin": [1, 0, 1]},
+			"faces": {
+				"north": {"uv": [0, 8, 14, 14], "texture": "#0"},
+				"east": {"uv": [0, 8, 14, 14], "texture": "#0"},
+				"south": {"uv": [0, 8, 14, 14], "texture": "#0"},
+				"west": {"uv": [0, 8, 14, 14], "texture": "#0"},
+				"up": {"uv": [0, 0, 8, 8], "texture": "#0"},
+				"down": {"uv": [8, 0, 16, 8], "texture": "#0"}
+			}
+		}
+	],
+	"gui_light": "front",
+	"display": {
+		"thirdperson_righthand": {
+			"translation": [0, 0, -2.5],
+			"scale": [0.8, 1, 0.8]
+		},
+		"thirdperson_lefthand": {
+			"translation": [0, 0, -2.5],
+			"scale": [0.8, 1, 0.8]
+		},
+		"firstperson_righthand": {
+			"translation": [0, 0, -2.5],
+			"scale": [0.8, 1, 0.8]
+		},
+		"firstperson_lefthand": {
+			"translation": [0, 0, -2.5],
+			"scale": [0.8, 1, 0.8]
+		},
+		"ground": {
+			"translation": [0, 3, 0]
+		},
+		"gui": {
+			"rotation": [25, -45, 0],
+			"translation": [0, 2, 0],
+			"scale": [0.75, 0.75, 0.75]
+		},
+		"fixed": {
+			"rotation": [-90, 0, 0],
+			"translation": [0, 0, -7]
+		},
+		"on_shelf": {
+			"rotation": [90, 0, 0],
+			"translation": [0, 0, 3.75]
+		}
+	}
+}

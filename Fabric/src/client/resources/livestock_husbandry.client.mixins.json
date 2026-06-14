@@ -3,7 +3,7 @@
 	"package": "com.livestockhusbandry.client.mixin",
 	"compatibilityLevel": "JAVA_25",
 	"client": [
-		"ExampleClientMixin"
+
 	],
 	"injectors": {
 		"defaultRequire": 1

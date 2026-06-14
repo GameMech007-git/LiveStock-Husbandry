@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "livestock_husbandry:block/collection_crate"
+    }
+  }
+}
