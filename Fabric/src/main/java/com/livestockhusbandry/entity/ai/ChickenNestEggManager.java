@@ -45,13 +45,13 @@ public final class ChickenNestEggManager {
 
         LAST_LAID_DAY_KEY.put(chickenId, dayKey);
 
-        LOGGER.info(
+        /*LOGGER.info(
                 "[ChickenNestEgg] chicken={} gameTime={} dayTime={} dayKey={} -> LAYING EGGS",
                 chickenId,
                 level.getGameTime(),
                 ChickenNestUtil.getDayTime(chicken),
                 dayKey
-        );
+        );*/
 
         return true;
     }

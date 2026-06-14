@@ -1,4 +1,5 @@
 {
   "item.livestock_husbandry.chicken_nest": "Chicken Nest",
-  "item.livestock_husbandry.collection_crate": "Collection Crate"
+  "item.livestock_husbandry.collection_crate": "Collection Crate",
+  "container.livestock_husbandry.collection_crate": "Collection Crate"
 }

@@ -34,7 +34,7 @@ public class ModBlocks {
 
     public static final Block COLLECTION_CRATE = registerBlock(
             "collection_crate",
-            new Block(
+            new CollectionCrateBlock(
                     BlockBehaviour.Properties.of()
                             .setId(ResourceKey.create(
                                     Registries.BLOCK,
