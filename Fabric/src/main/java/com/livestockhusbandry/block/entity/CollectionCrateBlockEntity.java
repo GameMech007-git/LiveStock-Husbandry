@@ -23,7 +23,7 @@ import java.util.List;
 public class CollectionCrateBlockEntity extends RandomizableContainerBlockEntity {
 
     private static final Component DEFAULT_NAME =
-            Component.translatable("container.livestock_husbandry.collection_crate");
+            Component.translatable("container.livestockhusbandry.collection_crate");
 
     private static final int SLOT_COUNT = 27;
     private static final int COLLECT_INTERVAL_TICKS = 10;

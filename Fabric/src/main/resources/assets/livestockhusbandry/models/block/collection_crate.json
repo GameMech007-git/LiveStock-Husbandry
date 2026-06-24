@@ -2,8 +2,8 @@
 	"format_version": "1.21.11",
 	"credit": "Made with Blockbench",
 	"textures": {
-		"0": "livestock_husbandry:block/collection_crate",
-		"particle": "livestock_husbandry:block/collection_crate"
+		"0": "livestockhusbandry:block/collection_crate",
+		"particle": "livestockhusbandry:block/collection_crate"
 	},
 	"elements": [
 		{

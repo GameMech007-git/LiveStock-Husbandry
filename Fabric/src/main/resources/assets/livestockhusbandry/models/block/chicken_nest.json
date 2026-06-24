@@ -2,8 +2,8 @@
 	"format_version": "1.21.11",
 	"credit": "Made with Blockbench",
 	"textures": {
-		"0": "livestock_husbandry:block/chicken_nest",
-		"particle": "livestock_husbandry:block/chicken_nest"
+		"0": "livestockhusbandry:block/chicken_nest",
+		"particle": "livestockhusbandry:block/chicken_nest"
 	},
 	"elements": [
 		{

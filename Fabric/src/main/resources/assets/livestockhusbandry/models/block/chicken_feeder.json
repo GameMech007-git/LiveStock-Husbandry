@@ -2,10 +2,10 @@
 	"format_version": "1.21.11",
 	"credit": "Made with Blockbench",
 	"textures": {
-		"0": "livestock_husbandry:block/chicken_feeder_1",
-		"1": "livestock_husbandry:block/chicken_feeder_2",
-		"2": "livestock_husbandry:block/chicken_feeder_3",
-		"particle": "livestock_husbandry:block/chicken_feeder_1"
+		"0": "livestockhusbandry:block/chicken_feeder_1",
+		"1": "livestockhusbandry:block/chicken_feeder_2",
+		"2": "livestockhusbandry:block/chicken_feeder_3",
+		"particle": "livestockhusbandry:block/chicken_feeder_1"
 	},
 	"elements": [
 		{

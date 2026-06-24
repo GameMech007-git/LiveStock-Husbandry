@@ -1,6 +1,6 @@
 {
 	"schemaVersion": 1,
-	"id": "livestock_husbandry",
+	"id": "livestockhusbandry",
 	"version": "${version}",
 	"name": "LiveStock & Husbandry",
 	"description": "A vanilla-style livestock mod adding chicken nests, animal troughs, and better farm animal behavior.!",
@@ -13,7 +13,7 @@
 		"issues": "https://github.com/GameMech007-git/LiveStock-Husbandry/issues"
 	},
 	"license": "GPL 3.0",
-	"icon": "assets/livestock_husbandry/icon.png",
+	"icon": "assets/livestockhusbandry/icon.png",
 	"environment": "*",
 	"entrypoints": {
 		"main": [
@@ -24,9 +24,9 @@
 		]
 	},
 	"mixins": [
-		"livestock_husbandry.mixins.json",
+		"livestockhusbandry.mixins.json",
 		{
-			"config": "livestock_husbandry.client.mixins.json",
+			"config": "livestockhusbandry.client.mixins.json",
 			"environment": "client"
 		}
 	],
