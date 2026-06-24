@@ -1,7 +1,7 @@
 package com.livestockhusbandry.mixin;
 
-import com.livestockhusbandry.entity.ai.ChickenRestOnNestGoal;
-import com.livestockhusbandry.entity.ai.ChickenSleepInNestGoal;
+import com.livestockhusbandry.entity.ai.chicken.ChickenRestOnNestGoal;
+import com.livestockhusbandry.entity.ai.chicken.ChickenSleepInNestGoal;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.animal.chicken.Chicken;

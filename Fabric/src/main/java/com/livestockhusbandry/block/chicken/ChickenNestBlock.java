@@ -1,4 +1,4 @@
-package com.livestockhusbandry.block;
+package com.livestockhusbandry.block.chicken;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;

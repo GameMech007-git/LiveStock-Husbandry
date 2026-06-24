@@ -2,5 +2,6 @@
   "item.livestockhusbandry.chicken_nest": "Chicken Nest",
   "item.livestockhusbandry.collection_crate": "Collection Crate",
   "container.livestockhusbandry.collection_crate": "Collection Crate",
-  "item.livestockhusbandry.chicken_feeder": "Chicken Feeder"
+  "item.livestockhusbandry.chicken_feeder": "Chicken Feeder",
+  "block.livestockhusbandry.sheep_trough": "Sheep Trough"
 }

@@ -1,4 +1,4 @@
-package com.livestockhusbandry.entity.ai;
+package com.livestockhusbandry.entity.ai.chicken;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;

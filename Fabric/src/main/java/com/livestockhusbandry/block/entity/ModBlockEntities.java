@@ -40,6 +40,20 @@ public class ModBlockEntities {
                             .build()
             );
 
+    public static final BlockEntityType<TroughBlockEntity> TROUGH = Registry.register(
+            BuiltInRegistries.BLOCK_ENTITY_TYPE,
+            Identifier.fromNamespaceAndPath(
+                    LiveStockHusbandry.MOD_ID,
+                    "trough"
+            ),
+            FabricBlockEntityTypeBuilder
+                    .create(
+                            TroughBlockEntity::new,
+                            ModBlocks.TROUGH
+                    )
+                    .build()
+    );
+
     public static void registerModBlockEntities() {
         LiveStockHusbandry.LOGGER.info(
                 "Registering block entities for " + LiveStockHusbandry.MOD_ID

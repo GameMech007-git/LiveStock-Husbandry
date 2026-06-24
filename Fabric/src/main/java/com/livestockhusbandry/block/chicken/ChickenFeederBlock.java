@@ -1,4 +1,4 @@
-package com.livestockhusbandry.block;
+package com.livestockhusbandry.block.chicken;
 
 import com.livestockhusbandry.block.entity.ChickenFeederBlockEntity;
 import com.livestockhusbandry.block.entity.ModBlockEntities;

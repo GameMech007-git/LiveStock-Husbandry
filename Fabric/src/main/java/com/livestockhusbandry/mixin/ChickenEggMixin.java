@@ -1,8 +1,8 @@
 package com.livestockhusbandry.mixin;
 
 import com.livestockhusbandry.block.ModBlocks;
-import com.livestockhusbandry.entity.ai.ChickenNestEggManager;
-import com.livestockhusbandry.entity.ai.ChickenNestReservations;
+import com.livestockhusbandry.entity.ai.chicken.ChickenNestEggManager;
+import com.livestockhusbandry.entity.ai.chicken.ChickenNestReservations;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;

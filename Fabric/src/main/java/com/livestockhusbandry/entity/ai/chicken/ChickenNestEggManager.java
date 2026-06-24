@@ -1,4 +1,4 @@
-package com.livestockhusbandry.entity.ai;
+package com.livestockhusbandry.entity.ai.chicken;
 
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.animal.chicken.Chicken;
@@ -44,14 +44,6 @@ public final class ChickenNestEggManager {
         }
 
         LAST_LAID_DAY_KEY.put(chickenId, dayKey);
-
-        /*LOGGER.info(
-                "[ChickenNestEgg] chicken={} gameTime={} dayTime={} dayKey={} -> LAYING EGGS",
-                chickenId,
-                level.getGameTime(),
-                ChickenNestUtil.getDayTime(chicken),
-                dayKey
-        );*/
 
         return true;
     }

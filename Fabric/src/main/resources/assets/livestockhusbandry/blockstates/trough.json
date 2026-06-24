@@ -1,0 +1,23 @@
+{
+  "variants": {
+    "facing=north,part=single": { "model": "livestockhusbandry:block/trough" },
+    "facing=east,part=single": { "model": "livestockhusbandry:block/trough", "y": 90 },
+    "facing=south,part=single": { "model": "livestockhusbandry:block/trough", "y": 180 },
+    "facing=west,part=single": { "model": "livestockhusbandry:block/trough", "y": 270 },
+
+    "facing=north,part=left": { "model": "livestockhusbandry:block/trough_end" },
+    "facing=east,part=left": { "model": "livestockhusbandry:block/trough_end", "y": 90 },
+    "facing=south,part=left": { "model": "livestockhusbandry:block/trough_end", "y": 180 },
+    "facing=west,part=left": { "model": "livestockhusbandry:block/trough_end", "y": 270 },
+
+    "facing=north,part=middle": { "model": "livestockhusbandry:block/trough_mid" },
+    "facing=east,part=middle": { "model": "livestockhusbandry:block/trough_mid", "y": 90 },
+    "facing=south,part=middle": { "model": "livestockhusbandry:block/trough_mid", "y": 180 },
+    "facing=west,part=middle": { "model": "livestockhusbandry:block/trough_mid", "y": 270 },
+
+    "facing=north,part=right": { "model": "livestockhusbandry:block/trough_end", "y": 180 },
+    "facing=east,part=right": { "model": "livestockhusbandry:block/trough_end", "y": 270 },
+    "facing=south,part=right": { "model": "livestockhusbandry:block/trough_end" },
+    "facing=west,part=right": { "model": "livestockhusbandry:block/trough_end", "y": 90 }
+  }
+}

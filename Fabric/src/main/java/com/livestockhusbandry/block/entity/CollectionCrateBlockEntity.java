@@ -1,6 +1,6 @@
 package com.livestockhusbandry.block.entity;
 
-import com.livestockhusbandry.block.ChickenNestBlock;
+import com.livestockhusbandry.block.chicken.ChickenNestBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
