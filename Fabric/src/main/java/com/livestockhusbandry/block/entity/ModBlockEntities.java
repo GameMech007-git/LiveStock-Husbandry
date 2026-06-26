@@ -40,6 +40,21 @@ public class ModBlockEntities {
                             .build()
             );
 
+    public static final BlockEntityType<ShepherdRackBlockEntity> SHEPHERD_RACK =
+            Registry.register(
+                    BuiltInRegistries.BLOCK_ENTITY_TYPE,
+                    Identifier.fromNamespaceAndPath(
+                            LiveStockHusbandry.MOD_ID,
+                            "shepherd_rack"
+                    ),
+                    FabricBlockEntityTypeBuilder
+                            .create(
+                                    ShepherdRackBlockEntity::new,
+                                    ModBlocks.SHEPHERD_RACK
+                            )
+                            .build()
+            );
+
     public static final BlockEntityType<TroughBlockEntity> TROUGH = Registry.register(
             BuiltInRegistries.BLOCK_ENTITY_TYPE,
             Identifier.fromNamespaceAndPath(

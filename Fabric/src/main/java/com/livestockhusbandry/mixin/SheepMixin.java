@@ -1,9 +1,6 @@
 package com.livestockhusbandry.mixin;
 
-import com.livestockhusbandry.entity.ai.sheep.SheepRegisterToTroughGoal;
-import com.livestockhusbandry.entity.ai.sheep.SheepReturnToTroughGoal;
-import com.livestockhusbandry.entity.ai.sheep.SheepTroughReservations;
-import com.livestockhusbandry.entity.ai.sheep.SheepWoolGrowAtTroughGoal;
+import com.livestockhusbandry.entity.ai.sheep.*;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.animal.sheep.Sheep;

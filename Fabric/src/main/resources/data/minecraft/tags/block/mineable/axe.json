@@ -3,6 +3,7 @@
   "values": [
     "livestockhusbandry:trough",
     "livestockhusbandry:collection_crate",
-    "livestockhusbandry:chicken_feeder"
+    "livestockhusbandry:chicken_feeder",
+    "livestockhusbandry:shepherd_rack"
   ]
 }

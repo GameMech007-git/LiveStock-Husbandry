@@ -3,6 +3,7 @@ package com.livestockhusbandry.block;
 import com.livestockhusbandry.LiveStockHusbandry;
 import com.livestockhusbandry.block.chicken.ChickenFeederBlock;
 import com.livestockhusbandry.block.chicken.ChickenNestBlock;
+import com.livestockhusbandry.block.shepherd.ShepherdRackBlock;
 import com.livestockhusbandry.block.trough.TroughBlock;
 import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
 import net.minecraft.core.Registry;
@@ -76,6 +77,20 @@ public class ModBlocks {
             )
     );
 
+    public static final Block SHEPHERD_RACK = registerBlock(
+            "shepherd_rack",
+            new ShepherdRackBlock(
+                    BlockBehaviour.Properties.of()
+                            .setId(ResourceKey.create(
+                                    Registries.BLOCK,
+                                    Identifier.fromNamespaceAndPath(LiveStockHusbandry.MOD_ID, "shepherd_rack")
+                            ))
+                            .strength(1.5F, 2.0F)
+                            .sound(SoundType.WOOD)
+                            .noOcclusion()
+            )
+    );
+
     private static Block registerBlock(String name, Block block) {
         Identifier id = Identifier.fromNamespaceAndPath(LiveStockHusbandry.MOD_ID, name);
 
@@ -108,6 +123,7 @@ public class ModBlocks {
                     output.accept(COLLECTION_CRATE);
                     output.accept(CHICKEN_FEEDER);
                     output.accept(TROUGH);
+                    output.accept(SHEPHERD_RACK);
                 });
     }
 }
