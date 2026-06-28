@@ -1,4 +1,4 @@
-package com.livestockhusbandry.entity.ai.sheep;
+package com.livestockhusbandry.entity.ai.cow;
 
 import com.livestockhusbandry.block.entity.TroughBlockEntity;
 import com.livestockhusbandry.block.trough.TroughAnimalType;
@@ -14,37 +14,37 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public final class SheepTroughReservations {
+public final class CowTroughReservations {
 
-    private static final Map<SheepKey, Assignment> SHEEP_TO_ASSIGNMENT = new HashMap<>();
-    private static final Map<TroughBlockKey, UUID> TROUGH_BLOCK_TO_SHEEP = new HashMap<>();
+    private static final Map<CowKey, Assignment> COW_TO_ASSIGNMENT = new HashMap<>();
+    private static final Map<TroughBlockKey, UUID> TROUGH_BLOCK_TO_COW = new HashMap<>();
 
-    private SheepTroughReservations() {
+    private CowTroughReservations() {
     }
 
-    public static boolean register(Level level, UUID sheepId, BlockPos sheepPos, TroughUtil.TroughGroup group) {
-        SheepKey sheepKey = new SheepKey(level.dimension(), sheepId);
+    public static boolean register(Level level, UUID cowId, BlockPos cowPos, TroughUtil.TroughGroup group) {
+        CowKey cowKey = new CowKey(level.dimension(), cowId);
 
-        Assignment oldAssignment = SHEEP_TO_ASSIGNMENT.get(sheepKey);
+        Assignment oldAssignment = COW_TO_ASSIGNMENT.get(cowKey);
 
         if (oldAssignment != null && oldAssignment.controllerPos().equals(group.controllerPos())) {
             return true;
         }
 
         if (oldAssignment != null) {
-            TROUGH_BLOCK_TO_SHEEP.remove(
+            TROUGH_BLOCK_TO_COW.remove(
                     new TroughBlockKey(level.dimension(), oldAssignment.assignedTroughPos())
             );
-            SHEEP_TO_ASSIGNMENT.remove(sheepKey);
+            COW_TO_ASSIGNMENT.remove(cowKey);
         }
 
-        BlockPos freeTroughPos = findFreeTroughBlock(level, sheepId, sheepPos, group);
+        BlockPos freeTroughPos = findFreeTroughBlock(level, cowId, cowPos, group);
 
         if (freeTroughPos == null) {
             return false;
         }
 
-        BlockPos eatPos = findBestEatBlock(level, sheepPos, freeTroughPos, group);
+        BlockPos eatPos = findBestEatBlock(level, cowPos, freeTroughPos, group);
 
         Assignment assignment = new Assignment(
                 group.controllerPos().immutable(),
@@ -52,17 +52,19 @@ public final class SheepTroughReservations {
                 eatPos.immutable()
         );
 
-        SHEEP_TO_ASSIGNMENT.put(sheepKey, assignment);
-        TROUGH_BLOCK_TO_SHEEP.put(
-                new TroughBlockKey(level.dimension(), freeTroughPos.immutable()),
-                sheepId
+        COW_TO_ASSIGNMENT.put(cowKey, assignment);
+        TroughBlockKey troughBlockKey = new TroughBlockKey(
+                level.dimension(),
+                freeTroughPos.immutable()
         );
+
+        TROUGH_BLOCK_TO_COW.putIfAbsent(troughBlockKey, cowId);
 
         if (level instanceof ServerLevel serverLevel) {
             BlockEntity blockEntity = serverLevel.getBlockEntity(group.controllerPos());
 
             if (blockEntity instanceof TroughBlockEntity trough) {
-                trough.lockAnimalType(TroughAnimalType.SHEEP);
+                trough.lockAnimalType(TroughAnimalType.COW);
             }
         }
 
@@ -71,7 +73,7 @@ public final class SheepTroughReservations {
 
     private static BlockPos findBestEatBlock(
             Level level,
-            BlockPos sheepPos,
+            BlockPos cowPos,
             BlockPos troughPos,
             TroughUtil.TroughGroup group
     ) {
@@ -94,7 +96,7 @@ public final class SheepTroughReservations {
                 continue;
             }
 
-            double distance = candidate.distSqr(sheepPos);
+            double distance = candidate.distSqr(cowPos);
 
             if (distance < bestDistance) {
                 bestDistance = distance;
@@ -112,40 +114,51 @@ public final class SheepTroughReservations {
     @Nullable
     private static BlockPos findFreeTroughBlock(
             Level level,
-            UUID sheepId,
-            BlockPos sheepPos,
+            UUID cowId,
+            BlockPos cowPos,
             TroughUtil.TroughGroup group
     ) {
-        BlockPos bestPos = null;
-        double bestDistance = Double.MAX_VALUE;
+        BlockPos bestFreePos = null;
+        double bestFreeDistance = Double.MAX_VALUE;
+
+        BlockPos bestAnyPos = null;
+        double bestAnyDistance = Double.MAX_VALUE;
 
         for (BlockPos troughPos : group.troughPositions()) {
+            double distance = troughPos.distSqr(cowPos);
+
+            if (distance < bestAnyDistance) {
+                bestAnyDistance = distance;
+                bestAnyPos = troughPos.immutable();
+            }
+
             TroughBlockKey troughBlockKey = new TroughBlockKey(
                     level.dimension(),
                     troughPos.immutable()
             );
 
-            UUID currentSheep = TROUGH_BLOCK_TO_SHEEP.get(troughBlockKey);
+            UUID currentCow = TROUGH_BLOCK_TO_COW.get(troughBlockKey);
 
-            if (currentSheep != null && !currentSheep.equals(sheepId)) {
+            if (currentCow != null && !currentCow.equals(cowId)) {
                 continue;
             }
 
-            double distance = troughPos.distSqr(sheepPos);
-
-            if (distance < bestDistance) {
-                bestDistance = distance;
-                bestPos = troughPos.immutable();
+            if (distance < bestFreeDistance) {
+                bestFreeDistance = distance;
+                bestFreePos = troughPos.immutable();
             }
         }
 
-        return bestPos;
+        if (bestFreePos != null) {
+            return bestFreePos;
+        }
+        return bestAnyPos;
     }
 
     @Nullable
-    public static BlockPos getRegisteredTrough(Level level, UUID sheepId) {
-        Assignment assignment = SHEEP_TO_ASSIGNMENT.get(
-                new SheepKey(level.dimension(), sheepId)
+    public static BlockPos getRegisteredTrough(Level level, UUID cowId) {
+        Assignment assignment = COW_TO_ASSIGNMENT.get(
+                new CowKey(level.dimension(), cowId)
         );
 
         if (assignment == null) {
@@ -156,9 +169,9 @@ public final class SheepTroughReservations {
     }
 
     @Nullable
-    public static BlockPos getAssignedTroughBlock(Level level, UUID sheepId) {
-        Assignment assignment = SHEEP_TO_ASSIGNMENT.get(
-                new SheepKey(level.dimension(), sheepId)
+    public static BlockPos getAssignedTroughBlock(Level level, UUID cowId) {
+        Assignment assignment = COW_TO_ASSIGNMENT.get(
+                new CowKey(level.dimension(), cowId)
         );
 
         if (assignment == null) {
@@ -171,7 +184,7 @@ public final class SheepTroughReservations {
     public static int getRegisteredCount(Level level, BlockPos controllerPos) {
         int count = 0;
 
-        for (Assignment assignment : SHEEP_TO_ASSIGNMENT.values()) {
+        for (Assignment assignment : COW_TO_ASSIGNMENT.values()) {
             if (assignment.controllerPos().equals(controllerPos)) {
                 count++;
             }
@@ -180,23 +193,23 @@ public final class SheepTroughReservations {
         return count;
     }
 
-    public static void unregister(Level level, UUID sheepId) {
-        SheepKey sheepKey = new SheepKey(level.dimension(), sheepId);
-        Assignment assignment = SHEEP_TO_ASSIGNMENT.remove(sheepKey);
+    public static void unregister(Level level, UUID cowId) {
+        CowKey cowKey = new CowKey(level.dimension(), cowId);
+        Assignment assignment = COW_TO_ASSIGNMENT.remove(cowKey);
 
         if (assignment == null) {
             return;
         }
 
-        TROUGH_BLOCK_TO_SHEEP.remove(
+        TROUGH_BLOCK_TO_COW.remove(
                 new TroughBlockKey(level.dimension(), assignment.assignedTroughPos())
         );
     }
 
     @Nullable
-    public static BlockPos getAssignedEatBlock(Level level, UUID sheepId) {
-        Assignment assignment = SHEEP_TO_ASSIGNMENT.get(
-                new SheepKey(level.dimension(), sheepId)
+    public static BlockPos getAssignedEatBlock(Level level, UUID cowId) {
+        Assignment assignment = COW_TO_ASSIGNMENT.get(
+                new CowKey(level.dimension(), cowId)
         );
 
         if (assignment == null) {
@@ -206,16 +219,16 @@ public final class SheepTroughReservations {
         return assignment.assignedEatPos();
     }
 
-    public static void updateAssignedEatBlock(Level level, UUID sheepId, BlockPos newEatPos) {
-        SheepKey sheepKey = new SheepKey(level.dimension(), sheepId);
-        Assignment old = SHEEP_TO_ASSIGNMENT.get(sheepKey);
+    public static void updateAssignedEatBlock(Level level, UUID cowId, BlockPos newEatPos) {
+        CowKey cowKey = new CowKey(level.dimension(), cowId);
+        Assignment old = COW_TO_ASSIGNMENT.get(cowKey);
 
         if (old == null) {
             return;
         }
 
-        SHEEP_TO_ASSIGNMENT.put(
-                sheepKey,
+        COW_TO_ASSIGNMENT.put(
+                cowKey,
                 new Assignment(
                         old.controllerPos(),
                         old.assignedTroughPos(),
@@ -224,7 +237,7 @@ public final class SheepTroughReservations {
         );
     }
 
-    private record SheepKey(ResourceKey<Level> dimension, UUID sheepId) {
+    private record CowKey(ResourceKey<Level> dimension, UUID cowId) {
     }
 
     private record TroughBlockKey(ResourceKey<Level> dimension, BlockPos pos) {

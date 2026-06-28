@@ -1,11 +1,11 @@
-package com.livestockhusbandry.entity.ai.sheep;
+package com.livestockhusbandry.entity.ai.cow;
 
 import com.livestockhusbandry.block.entity.TroughBlockEntity;
 import com.livestockhusbandry.block.trough.TroughUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.animal.sheep.Sheep;
+import net.minecraft.world.entity.animal.cow.Cow;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 
@@ -16,14 +16,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-public final class SheepTroughBreedingManager {
+public final class CowTroughBreedingManager {
 
     private static final int WHEAT_COST = 2;
 
     private static final Map<PendingPairKey, PendingBabyRegistration> PENDING_BABIES =
             new HashMap<>();
 
-    private SheepTroughBreedingManager() {
+    private CowTroughBreedingManager() {
     }
 
     public static boolean tryBreed(
@@ -35,23 +35,25 @@ public final class SheepTroughBreedingManager {
             return false;
         }
 
-        int registeredCount = SheepTroughReservations.getRegisteredCount(
+        int breedingLimit = getBreedingLimit(group);
+
+        int registeredCount = CowTroughReservations.getRegisteredCount(
                 level,
                 group.controllerPos()
         );
 
-        if (registeredCount >= group.capacity()) {
+        if (registeredCount >= breedingLimit) {
             return false;
         }
 
-        List<Sheep> candidates = findBreedingCandidates(level, group);
+        List<Cow> candidates = findBreedingCandidates(level, group);
 
         if (candidates.size() < 2) {
             return false;
         }
 
-        Sheep first = candidates.get(0);
-        Sheep second = candidates.get(1);
+        Cow first = candidates.get(0);
+        Cow second = candidates.get(1);
 
         if (!trough.consumeWheat(WHEAT_COST)) {
             return false;
@@ -81,9 +83,9 @@ public final class SheepTroughBreedingManager {
 
     public static void registerTroughBredBabyIfPending(
             ServerLevel level,
-            Sheep firstParent,
-            Sheep secondParent,
-            Sheep babySheep
+            Cow firstParent,
+            Cow secondParent,
+            Cow babyCow
     ) {
         PendingPairKey pairKey = PendingPairKey.of(
                 level.dimension(),
@@ -111,24 +113,30 @@ public final class SheepTroughBreedingManager {
                 pending.controllerPos()
         );
 
-        int registeredCount = SheepTroughReservations.getRegisteredCount(
+        int breedingLimit = getBreedingLimit(group);
+
+        int registeredCount = CowTroughReservations.getRegisteredCount(
                 level,
                 group.controllerPos()
         );
 
-        if (registeredCount >= group.capacity()) {
+        if (registeredCount >= breedingLimit) {
             return;
         }
 
-        SheepTroughReservations.register(
+        CowTroughReservations.register(
                 level,
-                babySheep.getUUID(),
-                babySheep.blockPosition(),
+                babyCow.getUUID(),
+                babyCow.blockPosition(),
                 group
         );
     }
 
-    private static List<Sheep> findBreedingCandidates(
+    private static int getBreedingLimit(TroughUtil.TroughGroup group) {
+        return group.capacity() + 2;
+    }
+
+    private static List<Cow> findBreedingCandidates(
             ServerLevel level,
             TroughUtil.TroughGroup group
     ) {
@@ -140,13 +148,13 @@ public final class SheepTroughBreedingManager {
                 searchRadius
         );
 
-        List<Sheep> sheep = level.getEntitiesOfClass(
-                Sheep.class,
+        List<Cow> cows = level.getEntitiesOfClass(
+                Cow.class,
                 searchBox,
                 candidate -> isValidBreedingCandidate(level, group, candidate)
         );
 
-        List<Sheep> sorted = new ArrayList<>(sheep);
+        List<Cow> sorted = new ArrayList<>(cows);
 
         sorted.sort(
                 Comparator.comparingDouble(
@@ -164,27 +172,23 @@ public final class SheepTroughBreedingManager {
     private static boolean isValidBreedingCandidate(
             ServerLevel level,
             TroughUtil.TroughGroup group,
-            Sheep sheep
+            Cow cow
     ) {
-        if (!sheep.isAlive()) {
+        if (!cow.isAlive()) {
             return false;
         }
 
-        if (sheep.isBaby()) {
-            return false;
-        }
-
-        if (sheep.isInLove()) {
+        if (cow.isBaby()) {
             return false;
         }
 
         if (!group.controllerPos().equals(
-                SheepTroughReservations.getRegisteredTrough(level, sheep.getUUID())
+                CowTroughReservations.getRegisteredTrough(level, cow.getUUID())
         )) {
             return false;
         }
 
-        return SheepTroughUtil.isInsideTroughArea(sheep, group);
+        return CowTroughUtil.isInsideTroughArea(cow, group);
     }
 
     private record PendingBabyRegistration(

@@ -6,6 +6,7 @@ import com.livestockhusbandry.block.trough.TroughUtil;
 import com.livestockhusbandry.entity.ai.sheep.SheepTroughReservations;
 import com.livestockhusbandry.entity.ai.sheep.SheepTroughUtil;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.SimpleContainer;
@@ -13,22 +14,35 @@ import net.minecraft.world.entity.animal.sheep.Sheep;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.npc.villager.Villager;
 import net.minecraft.world.entity.npc.villager.VillagerProfession;
+import net.minecraft.world.entity.schedule.Activity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.timeline.Timeline;
+import net.minecraft.world.timeline.Timelines;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 public final class ShepherdShearingManager {
 
     private static final int TICK_INTERVAL = 20;
     private static final int SEARCH_RANGE = 12;
     private static final int RACK_RANGE = 10;
+
     private static final double RACK_DISTANCE_SQR = 4.0D;
     private static final double SHEAR_DISTANCE_SQR = 3.0D;
-    private static final double WOOL_PICKUP_DISTANCE_SQR = 4.0D;
+    private static final double WOOL_PICKUP_RANGE = 5.0D;
+
+    private static final int MAX_SHEARS_PER_DAY = 3;
+    private static final long REST_AFTER_SHEAR_TICKS = 2000L;
+
+    private static final Map<ShepherdKey, ShepherdWorkState> WORK_STATES = new HashMap<>();
 
     private ShepherdShearingManager() {
     }
@@ -67,10 +81,18 @@ public final class ShepherdShearingManager {
             return;
         }
 
+        if (!isWorking(villager)) {
+            return;
+        }
+
         pickupNearbyWool(level, villager);
 
         if (hasWoolInInventory(villager)) {
             moveToBlock(villager, rackPos);
+            return;
+        }
+
+        if (!canShearNow(level, villager)) {
             return;
         }
 
@@ -90,14 +112,25 @@ public final class ShepherdShearingManager {
         villager.getLookControl().setLookAt(targetSheep);
 
         targetSheep.shear(level, SoundSource.NEUTRAL, ItemStack.EMPTY);
+        markSheared(level, villager);
 
-        level.broadcastEntityEvent(villager, (byte)14);
+        pickupNearbyWool(level, villager);
+
+        if (hasWoolInInventory(villager)) {
+            moveToBlock(villager, rackPos);
+        }
+
+        level.broadcastEntityEvent(villager, (byte) 14);
     }
 
     private static boolean isVanillaShepherd(Villager villager) {
         return villager.getVillagerData()
                 .profession()
                 .is(VillagerProfession.SHEPHERD);
+    }
+
+    private static boolean isWorking(Villager villager) {
+        return villager.getBrain().isActive(Activity.WORK);
     }
 
     @Nullable
@@ -135,7 +168,7 @@ public final class ShepherdShearingManager {
                 pos.getX() + 0.5D,
                 pos.getY(),
                 pos.getZ() + 0.5D,
-                0.55
+                0.55D
         );
 
         villager.getLookControl().setLookAt(
@@ -187,9 +220,9 @@ public final class ShepherdShearingManager {
 
     private static void pickupNearbyWool(ServerLevel level, Villager villager) {
         AABB box = villager.getBoundingBox().inflate(
-                WOOL_PICKUP_DISTANCE_SQR,
+                WOOL_PICKUP_RANGE,
                 1.5D,
-                WOOL_PICKUP_DISTANCE_SQR
+                WOOL_PICKUP_RANGE
         );
 
         List<ItemEntity> woolDrops = level.getEntitiesOfClass(
@@ -203,7 +236,6 @@ public final class ShepherdShearingManager {
 
         for (ItemEntity itemEntity : woolDrops) {
             ItemStack stack = itemEntity.getItem();
-
             ItemStack leftover = insertIntoVillagerInventory(villager, stack.copy());
 
             int inserted = stack.getCount() - leftover.getCount();
@@ -299,6 +331,14 @@ public final class ShepherdShearingManager {
     }
 
     private static boolean isValidTargetSheep(ServerLevel level, Sheep sheep) {
+        if (!sheep.isAlive()) {
+            return false;
+        }
+
+        if (sheep.isBaby()) {
+            return false;
+        }
+
         if (!sheep.readyForShearing()) {
             return false;
         }
@@ -319,5 +359,63 @@ public final class ShepherdShearingManager {
         }
 
         return SheepTroughUtil.isInsideTroughArea(sheep, group);
+    }
+
+    private static boolean canShearNow(ServerLevel level, Villager villager) {
+        ShepherdWorkState state = getWorkState(level, villager);
+
+        if (state.shearsToday >= MAX_SHEARS_PER_DAY) {
+            return false;
+        }
+
+        return level.getGameTime() >= state.cooldownUntilGameTime;
+    }
+
+    private static void markSheared(ServerLevel level, Villager villager) {
+        ShepherdWorkState state = getWorkState(level, villager);
+
+        state.shearsToday++;
+        state.cooldownUntilGameTime = level.getGameTime() + REST_AFTER_SHEAR_TICKS;
+    }
+
+    private static ShepherdWorkState getWorkState(ServerLevel level, Villager villager) {
+        ShepherdKey key = new ShepherdKey(level.dimension(), villager.getUUID());
+        ShepherdWorkState state = WORK_STATES.get(key);
+
+        long currentDay = getCurrentDay(level);
+
+        if (state == null) {
+            state = new ShepherdWorkState(currentDay);
+            WORK_STATES.put(key, state);
+            return state;
+        }
+
+        if (state.day != currentDay) {
+            state.day = currentDay;
+            state.shearsToday = 0;
+            state.cooldownUntilGameTime = 0L;
+        }
+
+        return state;
+    }
+
+    private static long getCurrentDay(ServerLevel level) {
+        return level.registryAccess()
+                .get(Timelines.OVERWORLD_DAY)
+                .map(timeline -> (long) ((Timeline) timeline.value()).getPeriodCount(level.clockManager()))
+                .orElse(level.getGameTime() / 24000L);
+    }
+
+    private record ShepherdKey(ResourceKey<Level> dimension, UUID villagerId) {
+    }
+
+    private static final class ShepherdWorkState {
+        private long day;
+        private int shearsToday;
+        private long cooldownUntilGameTime;
+
+        private ShepherdWorkState(long day) {
+            this.day = day;
+        }
     }
 }

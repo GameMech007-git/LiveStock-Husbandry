@@ -3,6 +3,7 @@ package com.livestockhusbandry.block.trough;
 import com.livestockhusbandry.block.ModBlocks;
 import com.livestockhusbandry.block.entity.ModBlockEntities;
 import com.livestockhusbandry.block.entity.TroughBlockEntity;
+import com.livestockhusbandry.entity.ai.cow.CowTroughReservations;
 import com.livestockhusbandry.entity.ai.sheep.SheepTroughReservations;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
@@ -157,7 +158,7 @@ public class TroughBlock extends BaseEntityBlock {
         }
 
         if (mainHandStack.is(Items.WHEAT)) {
-            int inserted = trough.insertWheat(mainHandStack.getCount());
+            int inserted = controllerTrough.insertWheat(mainHandStack.getCount());
 
             if (inserted > 0) {
                 if (!player.getAbilities().instabuild) {
@@ -166,11 +167,11 @@ public class TroughBlock extends BaseEntityBlock {
 
                 player.sendSystemMessage(
                         Component.literal(
-                                "Inserted " + inserted + " wheat.\nStored: " + trough.getWheatCount()
+                                "Inserted " + inserted + " wheat.\nStored: " + controllerTrough.getWheatCount()
                         )
                 );
             } else {
-                player.sendSystemMessage(Component.literal("Sheep trough is full."));
+                player.sendSystemMessage(Component.literal("Trough is full."));
             }
 
             return InteractionResult.SUCCESS;
@@ -187,18 +188,40 @@ public class TroughBlock extends BaseEntityBlock {
             areaText = "Fallback radius: " + group.radius();
         }
 
-        int registeredSheep = SheepTroughReservations.getRegisteredCount(
-                serverLevel,
-                group.controllerPos()
-        );
+        String animalText;
+
+        TroughAnimalType animalType = controllerTrough.getAnimalType();
+
+        if (animalType == TroughAnimalType.EMPTY) {
+            animalText = "Empty";
+        } else if (animalType == TroughAnimalType.SHEEP) {
+            int registeredSheep = SheepTroughReservations.getRegisteredCount(
+                    serverLevel,
+                    group.controllerPos()
+            );
+
+            animalText = "Sheep: " + registeredSheep + "/" + group.capacity();
+        } else if (animalType == TroughAnimalType.COW) {
+            int registeredCows = CowTroughReservations.getRegisteredCount(
+                    serverLevel,
+                    group.controllerPos()
+            );
+
+            int cowLimit = group.capacity() + 2;
+
+            animalText = "Cows: " + registeredCows + "/" + cowLimit
+                    + " | Stable: " + group.capacity();
+        } else {
+            animalText = animalType.name();
+        }
 
         player.sendSystemMessage(
                 Component.literal(
-                        "Wheat: " + trough.getWheatCount()
+                        "Trough: " + animalText
+                                + " | Wheat: " + controllerTrough.getWheatCount()
+                                + "/" + TroughBlockEntity.MAX_WHEAT
                                 + " | Group: " + group.size()
                                 + " trough" + (group.size() == 1 ? "" : "s")
-                                + " | Capacity: " + group.capacity()
-                                + " | Sheep: " + registeredSheep + "/" + group.capacity()
                                 + " | " + areaText
                                 + " | Controller: "
                                 + group.controllerPos().getX() + ", "

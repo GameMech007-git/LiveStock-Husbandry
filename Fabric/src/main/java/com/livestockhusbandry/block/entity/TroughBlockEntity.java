@@ -1,8 +1,12 @@
 package com.livestockhusbandry.block.entity;
 
+import com.livestockhusbandry.block.trough.TroughAnimalType;
 import com.livestockhusbandry.block.trough.TroughFenceAreaUtil;
 import com.livestockhusbandry.block.trough.TroughUtil;
+import com.livestockhusbandry.entity.ai.cow.CowTroughBreedingManager;
+import com.livestockhusbandry.entity.ai.cow.CowTroughReservations;
 import com.livestockhusbandry.entity.ai.sheep.SheepTroughBreedingManager;
+import com.livestockhusbandry.entity.ai.sheep.SheepTroughReservations;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
@@ -14,6 +18,10 @@ import net.minecraft.world.level.storage.ValueOutput;
 public class TroughBlockEntity extends BlockEntity {
 
     public static final int MAX_WHEAT = 384;
+
+    private static final int SLOW_TICK_INTERVAL = 1000;
+    private static final int WHEAT_COST_FOR_BREEDING = 2;
+
     private int breedingCooldownTicks = 20 * 60;
 
     private boolean hasFenceArea = false;
@@ -24,6 +32,8 @@ public class TroughBlockEntity extends BlockEntity {
 
     private int wheatCount = 0;
     private int tickCounter = 0;
+
+    private TroughAnimalType animalType = TroughAnimalType.EMPTY;
 
     public TroughBlockEntity(BlockPos pos, BlockState blockState) {
         super(ModBlockEntities.TROUGH, pos, blockState);
@@ -49,9 +59,59 @@ public class TroughBlockEntity extends BlockEntity {
         if (wheatCount < amount) {
             return false;
         }
+
         wheatCount -= amount;
         setChanged();
         return true;
+    }
+
+    public TroughAnimalType getAnimalType() {
+        return animalType;
+    }
+
+    public boolean canRegisterAnimal(TroughAnimalType type) {
+        return animalType == TroughAnimalType.EMPTY || animalType == type;
+    }
+
+    public void lockAnimalType(TroughAnimalType type) {
+        if (type == TroughAnimalType.EMPTY) {
+            return;
+        }
+
+        if (animalType != TroughAnimalType.EMPTY) {
+            return;
+        }
+
+        animalType = type;
+        setChanged();
+    }
+
+    public void clearAnimalTypeIfEmpty(ServerLevel level, TroughUtil.TroughGroup group) {
+        if (animalType == TroughAnimalType.SHEEP) {
+            int sheepCount = SheepTroughReservations.getRegisteredCount(
+                    level,
+                    group.controllerPos()
+            );
+
+            if (sheepCount <= 0) {
+                animalType = TroughAnimalType.EMPTY;
+                setChanged();
+            }
+
+            return;
+        }
+
+        if (animalType == TroughAnimalType.COW) {
+            int cowCount = CowTroughReservations.getRegisteredCount(
+                    level,
+                    group.controllerPos()
+            );
+
+            if (cowCount <= 0) {
+                animalType = TroughAnimalType.EMPTY;
+                setChanged();
+            }
+        }
     }
 
     public boolean hasFenceArea() {
@@ -132,7 +192,7 @@ public class TroughBlockEntity extends BlockEntity {
 
         trough.tickCounter++;
 
-        if (trough.tickCounter < 200) {
+        if (trough.tickCounter < SLOW_TICK_INTERVAL) {
             return;
         }
 
@@ -147,12 +207,46 @@ public class TroughBlockEntity extends BlockEntity {
             return;
         }
 
-        if (breedingCooldownTicks > 0) {
-            breedingCooldownTicks -= 200;
+        clearAnimalTypeIfEmpty(level, group);
+
+        if (animalType == TroughAnimalType.EMPTY) {
             return;
         }
 
-        boolean bred = SheepTroughBreedingManager.tryBreed(level, group, this);
+        if (breedingCooldownTicks > 0) {
+            breedingCooldownTicks -= SLOW_TICK_INTERVAL;
+            return;
+        }
+
+        if (wheatCount < WHEAT_COST_FOR_BREEDING) {
+            breedingCooldownTicks = 20 * 30 + level.getRandom().nextInt(20 * 60);
+            setChanged();
+            return;
+        }
+
+        boolean bred = false;
+
+        if (animalType == TroughAnimalType.SHEEP) {
+            int sheepCount = SheepTroughReservations.getRegisteredCount(
+                    level,
+                    group.controllerPos()
+            );
+
+            if (sheepCount >= 2 && sheepCount < group.capacity()) {
+                bred = SheepTroughBreedingManager.tryBreed(level, group, this);
+            }
+        } else if (animalType == TroughAnimalType.COW) {
+            int cowCount = CowTroughReservations.getRegisteredCount(
+                    level,
+                    group.controllerPos()
+            );
+
+            int cowBreedingLimit = group.capacity() + 2;
+
+            if (cowCount >= 2 && cowCount < cowBreedingLimit) {
+                bred = CowTroughBreedingManager.tryBreed(level, group, this);
+            }
+        }
 
         if (bred) {
             breedingCooldownTicks = 20 * 120 + level.getRandom().nextInt(20 * 120);
@@ -175,6 +269,7 @@ public class TroughBlockEntity extends BlockEntity {
         output.putInt("FenceMaxX", fenceMaxX);
         output.putInt("FenceMaxZ", fenceMaxZ);
         output.putInt("BreedingCooldownTicks", breedingCooldownTicks);
+        output.putInt("AnimalType", animalType.ordinal());
     }
 
     @Override
@@ -189,5 +284,14 @@ public class TroughBlockEntity extends BlockEntity {
         fenceMaxX = input.getInt("FenceMaxX").orElse(0);
         fenceMaxZ = input.getInt("FenceMaxZ").orElse(0);
         breedingCooldownTicks = input.getInt("BreedingCooldownTicks").orElse(20 * 60);
+
+        int savedAnimalType = input.getInt("AnimalType").orElse(0);
+        TroughAnimalType[] values = TroughAnimalType.values();
+
+        if (savedAnimalType < 0 || savedAnimalType >= values.length) {
+            animalType = TroughAnimalType.EMPTY;
+        } else {
+            animalType = values[savedAnimalType];
+        }
     }
 }

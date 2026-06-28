@@ -29,7 +29,7 @@ public class SheepRegisterToTroughGoal extends Goal {
 
         this.cooldownTicks = 100 + this.sheep.getRandom().nextInt(100);
 
-        if (SheepTroughReservations.getRegisteredTrough(
+        if (com.livestockhusbandry.entity.ai.sheep.SheepTroughReservations.getRegisteredTrough(
                 this.sheep.level(),
                 this.sheep.getUUID()
         ) != null) {

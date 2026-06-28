@@ -2,6 +2,7 @@ package com.livestockhusbandry.entity.ai.sheep;
 
 import com.livestockhusbandry.block.ModBlocks;
 import com.livestockhusbandry.block.entity.TroughBlockEntity;
+import com.livestockhusbandry.block.trough.TroughAnimalType;
 import com.livestockhusbandry.block.trough.TroughUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -44,7 +45,17 @@ public final class SheepTroughUtil {
                 continue;
             }
 
-            int registeredCount = SheepTroughReservations.getRegisteredCount(
+            TroughBlockEntity trough = getControllerTrough(serverLevel, group);
+
+            if (trough == null) {
+                continue;
+            }
+
+            if (!trough.canRegisterAnimal(TroughAnimalType.SHEEP)) {
+                continue;
+            }
+
+            int registeredCount = com.livestockhusbandry.entity.ai.sheep.SheepTroughReservations.getRegisteredCount(
                     serverLevel,
                     group.controllerPos()
             );
@@ -69,7 +80,7 @@ public final class SheepTroughUtil {
             return null;
         }
 
-        BlockPos controllerPos = SheepTroughReservations.getRegisteredTrough(
+        BlockPos controllerPos = com.livestockhusbandry.entity.ai.sheep.SheepTroughReservations.getRegisteredTrough(
                 serverLevel,
                 sheep.getUUID()
         );
@@ -79,17 +90,17 @@ public final class SheepTroughUtil {
         }
 
         if (!serverLevel.getBlockState(controllerPos).is(ModBlocks.TROUGH)) {
-            SheepTroughReservations.unregister(serverLevel, sheep.getUUID());
+            com.livestockhusbandry.entity.ai.sheep.SheepTroughReservations.unregister(serverLevel, sheep.getUUID());
             return null;
         }
 
-        BlockPos assignedTroughPos = SheepTroughReservations.getAssignedTroughBlock(
+        BlockPos assignedTroughPos = com.livestockhusbandry.entity.ai.sheep.SheepTroughReservations.getAssignedTroughBlock(
                 serverLevel,
                 sheep.getUUID()
         );
 
         if (assignedTroughPos == null || !serverLevel.getBlockState(assignedTroughPos).is(ModBlocks.TROUGH)) {
-            SheepTroughReservations.unregister(serverLevel, sheep.getUUID());
+            com.livestockhusbandry.entity.ai.sheep.SheepTroughReservations.unregister(serverLevel, sheep.getUUID());
             return null;
         }
 
@@ -169,7 +180,7 @@ public final class SheepTroughUtil {
     }
 
     public static BlockPos getEatBlockPos(Sheep sheep, TroughUtil.TroughGroup group) {
-        BlockPos assignedEatPos = SheepTroughReservations.getAssignedEatBlock(
+        BlockPos assignedEatPos = com.livestockhusbandry.entity.ai.sheep.SheepTroughReservations.getAssignedEatBlock(
                 sheep.level(),
                 sheep.getUUID()
         );
@@ -196,7 +207,7 @@ public final class SheepTroughUtil {
     }
 
     private static BlockPos getAssignedOrCenterTroughPos(Sheep sheep, TroughUtil.TroughGroup group) {
-        BlockPos assignedTroughPos = SheepTroughReservations.getAssignedTroughBlock(
+        BlockPos assignedTroughPos = com.livestockhusbandry.entity.ai.sheep.SheepTroughReservations.getAssignedTroughBlock(
                 sheep.level(),
                 sheep.getUUID()
         );
