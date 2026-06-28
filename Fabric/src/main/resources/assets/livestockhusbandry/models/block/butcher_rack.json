@@ -1,0 +1,10 @@
+{
+  "parent": "minecraft:block/orientable_with_bottom",
+  "textures": {
+    "bottom": "livestockhusbandry:block/butcher_rack_bottom",
+    "front": "livestockhusbandry:block/butcher_rack_front",
+    "back": "livestockhusbandry:block/butcher_rack_back",
+    "side": "livestockhusbandry:block/butcher_rack_side",
+    "top": "livestockhusbandry:block/butcher_rack_top"
+  }
+}

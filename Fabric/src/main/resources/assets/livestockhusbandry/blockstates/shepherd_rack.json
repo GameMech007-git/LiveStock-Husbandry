@@ -1,7 +1,5 @@
 {
   "variants": {
-    "": {
-      "model": "minecraft:block/loom"
-    }
+    "": { "model": "livestockhusbandry:block/shepherd_rack" }
   }
 }
