@@ -283,8 +283,7 @@ public class TroughBlock extends BaseEntityBlock {
         player.sendSystemMessage(
                 Component.literal(
                         "Fold: " + animalText
-                                + " | Wheat: " + TroughFoldUtil.getTotalWheat(serverLevel, fold)
-                                + " | Pig food: " + TroughFoldUtil.getTotalPigFood(serverLevel, fold)
+                                + " | " + getFoldFeedText(serverLevel, fold)
                                 + " | Troughs: " + fold.troughCount()
                                 + " | Area: "
                                 + fold.minX() + ", " + fold.minZ()
@@ -311,6 +310,24 @@ public class TroughBlock extends BaseEntityBlock {
                 );
             }
         }
+    }
+
+    private static String getFoldFeedText(ServerLevel level, TroughFold fold) {
+        TroughAnimalType animalType = fold.animalType();
+
+        if (animalType == TroughAnimalType.PIG) {
+            return "Pig food: " + TroughFoldUtil.getTotalPigFood(level, fold);
+        }
+
+        if (animalType == TroughAnimalType.SHEEP
+                || animalType == TroughAnimalType.COW) {
+            return "Wheat: " + TroughFoldUtil.getTotalWheat(level, fold);
+        }
+
+        return "Wheat: "
+                + TroughFoldUtil.getTotalWheat(level, fold)
+                + " | Pig food: "
+                + TroughFoldUtil.getTotalPigFood(level, fold);
     }
 
     private static String getFoldAnimalText(ServerLevel level, TroughFold fold) {

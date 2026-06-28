@@ -2,7 +2,7 @@ package com.livestockhusbandry;
 
 import com.livestockhusbandry.block.ModBlocks;
 import com.livestockhusbandry.entity.ModBlockEntities;
-import com.livestockhusbandry.villager.ShepherdRackPoiHelper;
+import com.livestockhusbandry.villager.LivestockPoiHelper;
 import net.fabricmc.api.ModInitializer;
 
 import org.slf4j.Logger;
@@ -17,7 +17,7 @@ public class LiveStockHusbandry implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		ModBlocks.registerModBlocks();
-		ShepherdRackPoiHelper.register();
+		LivestockPoiHelper.register();
 		ModBlockEntities.registerModBlockEntities();
 
 		LOGGER.info("LiveStock & Husbandry Initialized!");

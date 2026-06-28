@@ -10,7 +10,8 @@
 		"PoiTypesAccessor",
 		"CowMixin",
 		"EntityMixin",
-		"PigMixin"
+		"PigMixin",
+		"LivingEntityAccessor"
 	],
 	"client": [],
 	"injectors": {

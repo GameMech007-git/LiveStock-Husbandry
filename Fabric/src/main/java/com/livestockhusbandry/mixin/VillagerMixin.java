@@ -1,5 +1,6 @@
 package com.livestockhusbandry.mixin;
 
+import com.livestockhusbandry.ai.butcher.ButcherWorkManager;
 import com.livestockhusbandry.ai.shepherd.ShepherdShearingManager;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityType;
@@ -19,7 +20,10 @@ public abstract class VillagerMixin extends AbstractVillager {
     }
 
     @Inject(method = "customServerAiStep", at = @At("TAIL"))
-    private void livestockhusbandry$shepherdShearing(ServerLevel level, CallbackInfo ci) {
-        ShepherdShearingManager.tick(level, (Villager) (Object) this);
+    private void livestockhusbandry$livestockVillagerWork(ServerLevel level, CallbackInfo ci) {
+        Villager villager = (Villager) (Object) this;
+
+        ShepherdShearingManager.tick(level, villager);
+        ButcherWorkManager.tick(level, villager);
     }
 }
