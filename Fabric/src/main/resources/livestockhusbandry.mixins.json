@@ -9,7 +9,8 @@
 		"VillagerMixin",
 		"PoiTypesAccessor",
 		"CowMixin",
-		"EntityMixin"
+		"EntityMixin",
+		"PigMixin"
 	],
 	"client": [],
 	"injectors": {

@@ -1,11 +1,13 @@
 package com.livestockhusbandry.mixin;
 
-import com.livestockhusbandry.entity.ai.cow.CowTroughBreedingManager;
-import com.livestockhusbandry.entity.ai.sheep.SheepTroughBreedingManager;
+import com.livestockhusbandry.ai.cow.CowTroughBreedingManager;
+import com.livestockhusbandry.ai.pig.PigTroughBreedingManager;
+import com.livestockhusbandry.ai.sheep.SheepTroughBreedingManager;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.animal.cow.Cow;
+import net.minecraft.world.entity.animal.pig.Pig;
 import net.minecraft.world.entity.animal.sheep.Sheep;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -33,6 +35,20 @@ public abstract class AnimalMixin {
                     firstParent,
                     secondParent,
                     babyCow
+            );
+
+            return;
+        }
+
+        if (parent instanceof Pig firstParent
+                && partner instanceof Pig secondParent
+                && offspring instanceof Pig babyPig) {
+
+            PigTroughBreedingManager.registerTroughBredBabyIfPending(
+                    level,
+                    firstParent,
+                    secondParent,
+                    babyPig
             );
 
             return;

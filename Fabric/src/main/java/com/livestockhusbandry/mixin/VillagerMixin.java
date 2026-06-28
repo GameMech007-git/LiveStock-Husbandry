@@ -1,6 +1,6 @@
 package com.livestockhusbandry.mixin;
 
-import com.livestockhusbandry.entity.ai.shepherd.ShepherdShearingManager;
+import com.livestockhusbandry.ai.shepherd.ShepherdShearingManager;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.npc.villager.AbstractVillager;

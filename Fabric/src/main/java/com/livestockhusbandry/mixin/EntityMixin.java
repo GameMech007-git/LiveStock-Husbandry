@@ -1,7 +1,7 @@
 package com.livestockhusbandry.mixin;
 
-import com.livestockhusbandry.entity.ai.cow.CowTroughReservations;
-import com.livestockhusbandry.entity.ai.sheep.SheepTroughReservations;
+import com.livestockhusbandry.ai.cow.CowTroughReservations;
+import com.livestockhusbandry.ai.sheep.SheepTroughReservations;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.animal.cow.Cow;
 import net.minecraft.world.entity.animal.sheep.Sheep;

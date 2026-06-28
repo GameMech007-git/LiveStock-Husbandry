@@ -1,7 +1,7 @@
 package com.livestockhusbandry;
 
 import com.livestockhusbandry.block.ModBlocks;
-import com.livestockhusbandry.block.entity.ModBlockEntities;
+import com.livestockhusbandry.entity.ModBlockEntities;
 import com.livestockhusbandry.villager.ShepherdRackPoiHelper;
 import net.fabricmc.api.ModInitializer;
 

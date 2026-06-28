@@ -1,9 +1,7 @@
 package com.livestockhusbandry.mixin;
 
-import com.livestockhusbandry.entity.ai.cow.CowRegisterToTroughGoal;
-import com.livestockhusbandry.entity.ai.cow.CowReturnToTroughGoal;
-import com.livestockhusbandry.entity.ai.cow.CowTroughReservations;
-import net.minecraft.world.entity.Entity;
+import com.livestockhusbandry.ai.cow.CowRegisterToTroughGoal;
+import com.livestockhusbandry.ai.cow.CowReturnToTroughGoal;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.animal.cow.AbstractCow;

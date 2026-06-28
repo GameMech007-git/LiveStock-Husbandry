@@ -1,7 +1,7 @@
 package com.livestockhusbandry.block;
 
-import com.livestockhusbandry.block.entity.CollectionCrateBlockEntity;
-import com.livestockhusbandry.block.entity.ModBlockEntities;
+import com.livestockhusbandry.entity.CollectionCrateBlockEntity;
+import com.livestockhusbandry.entity.ModBlockEntities;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
