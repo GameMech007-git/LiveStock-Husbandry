@@ -4,6 +4,7 @@
     "livestockhusbandry:trough",
     "livestockhusbandry:collection_crate",
     "livestockhusbandry:chicken_feeder",
-    "livestockhusbandry:shepherd_rack"
+    "livestockhusbandry:shepherd_rack",
+    "livestockhusbandry:butcher_rack"
   ]
 }

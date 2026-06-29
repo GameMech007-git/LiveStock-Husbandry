@@ -22,7 +22,7 @@ public class ChickenFeederBlockEntity extends BlockEntity {
     public static final int VERTICAL_RANGE = 3;
 
     public static final int MAX_SEEDS = 384;
-    public static final int MAX_POPULATION = 20;
+    public static final int MAX_POPULATION = 10;
     public static final int MAX_PAIRS_PER_DAY = 4;
 
     private int seedCount = 0;

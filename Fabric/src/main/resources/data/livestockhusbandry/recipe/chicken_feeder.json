@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    " L ",
+    "PSP",
+    "P P"
+  ],
+  "key": {
+    "L": "#minecraft:logs",
+    "S": "minecraft:wheat_seeds",
+    "P": "#minecraft:planks"
+  },
+  "result": {
+    "id": "livestockhusbandry:chicken_feeder",
+    "count": 1
+  }
+}

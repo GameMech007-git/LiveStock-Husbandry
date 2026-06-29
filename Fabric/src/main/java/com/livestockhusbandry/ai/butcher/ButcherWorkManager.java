@@ -9,6 +9,7 @@ import com.livestockhusbandry.ai.cow.CowTroughUtil;
 import com.livestockhusbandry.ai.pig.PigTroughReservations;
 import com.livestockhusbandry.ai.pig.PigTroughUtil;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
@@ -40,8 +41,12 @@ public final class ButcherWorkManager {
 
     private static final double BUTCHER_DISTANCE_SQR = 3.0D;
 
-    private static final int MAX_BUTCHERS_PER_DAY = 3;
-    private static final long REST_AFTER_BUTCHER_TICKS = 2400L;
+    private static final int MAX_BUTCHERS_PER_DAY = 6;
+    private static final long REST_AFTER_BUTCHER_TICKS = 1000L;
+
+    private static final int NAME_SCAN_RANGE = 16;
+    private static final long NAME_SCAN_INTERVAL_TICKS = 1000L;
+    private static final int MAX_NAMES_PER_SCAN = 8;
 
     private static final Map<ButcherKey, ButcherWorkState> WORK_STATES = new HashMap<>();
 
@@ -55,6 +60,10 @@ public final class ButcherWorkManager {
 
         if (!isVanillaButcher(villager)) {
             return;
+        }
+
+        if (villager.tickCount % NAME_SCAN_INTERVAL_TICKS == 0) {
+            nameNearbyRegisteredLivestock(level, villager);
         }
 
         if (villager.isBaby() || villager.isSleeping() || villager.isTrading()) {
@@ -245,6 +254,10 @@ public final class ButcherWorkManager {
             return false;
         }
 
+        if (cow.hasCustomName()) {
+            return false;
+        }
+
         TroughFold fold = CowTroughUtil.getRegisteredFold(cow);
 
         if (fold == null) {
@@ -262,6 +275,10 @@ public final class ButcherWorkManager {
 
     private static boolean isValidPigTarget(ServerLevel level, Pig pig) {
         if (!pig.isAlive() || pig.isBaby()) {
+            return false;
+        }
+
+        if (pig.hasCustomName()) {
             return false;
         }
 
@@ -353,6 +370,62 @@ public final class ButcherWorkManager {
         }
     }
 
+    private static void nameNearbyRegisteredLivestock(ServerLevel level, Villager butcher) {
+        AABB searchBox = butcher.getBoundingBox().inflate(
+                NAME_SCAN_RANGE,
+                4.0D,
+                NAME_SCAN_RANGE
+        );
+
+        int named = 0;
+
+        List<Cow> cows = level.getEntitiesOfClass(
+                Cow.class,
+                searchBox,
+                cow -> cow.isAlive()
+                        && !cow.isBaby()
+                        && !cow.hasCustomName()
+                        && shouldReceiveButcherName(cow)
+                        && CowTroughUtil.getRegisteredFold(cow) != null
+        );
+
+        for (Cow cow : cows) {
+            cow.setCustomName(Component.literal(
+                    ButcherLivestockNamePool.randomName(level, cow)
+            ));
+            cow.setCustomNameVisible(true);
+
+            named++;
+
+            if (named >= MAX_NAMES_PER_SCAN) {
+                return;
+            }
+        }
+
+        List<Pig> pigs = level.getEntitiesOfClass(
+                Pig.class,
+                searchBox,
+                pig -> pig.isAlive()
+                        && !pig.isBaby()
+                        && !pig.hasCustomName()
+                        && shouldReceiveButcherName(pig)
+                        && PigTroughUtil.getRegisteredFold(pig) != null
+        );
+
+        for (Pig pig : pigs) {
+            pig.setCustomName(Component.literal(
+                    ButcherLivestockNamePool.randomName(level, pig)
+            ));
+            pig.setCustomNameVisible(true);
+
+            named++;
+
+            if (named >= MAX_NAMES_PER_SCAN) {
+                return;
+            }
+        }
+    }
+
     private static void butcherWithVanillaLoot(
             ServerLevel level,
             Villager villager,
@@ -414,5 +487,9 @@ public final class ButcherWorkManager {
                 itemEntity.setItem(stack);
             }
         }
+    }
+
+    private static boolean shouldReceiveButcherName(LivingEntity animal) {
+        return Math.floorMod(animal.getUUID().hashCode(), 100) < 50;
     }
 }

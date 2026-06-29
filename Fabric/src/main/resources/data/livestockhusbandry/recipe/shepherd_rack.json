@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    " W ",
+    "WSW",
+    "PPP"
+  ],
+  "key": {
+    "W": "#minecraft:wool",
+    "S": "minecraft:shears",
+    "P": "#minecraft:planks"
+  },
+  "result": {
+    "id": "livestockhusbandry:shepherd_rack",
+    "count": 1
+  }
+}

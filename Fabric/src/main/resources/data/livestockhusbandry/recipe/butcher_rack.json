@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    " I ",
+    "IAI",
+    "PPP"
+  ],
+  "key": {
+    "A": "minecraft:iron_axe",
+    "I": "minecraft:iron_ingot",
+    "P": "#minecraft:planks"
+  },
+  "result": {
+    "id": "livestockhusbandry:butcher_rack",
+    "count": 1
+  }
+}

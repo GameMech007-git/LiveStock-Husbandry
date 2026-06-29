@@ -1,5 +1,19 @@
 {
   "variants": {
-    "": { "model": "livestockhusbandry:block/shepherd_rack" }
+    "facing=north": {
+      "model": "livestockhusbandry:block/shepherd_rack"
+    },
+    "facing=east": {
+      "model": "livestockhusbandry:block/shepherd_rack",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "livestockhusbandry:block/shepherd_rack",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "livestockhusbandry:block/shepherd_rack",
+      "y": 270
+    }
   }
 }

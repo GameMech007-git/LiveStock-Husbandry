@@ -38,8 +38,8 @@ public final class ShepherdShearingManager {
     private static final double SHEAR_DISTANCE_SQR = 3.0D;
     private static final double WOOL_PICKUP_RANGE = 5.0D;
 
-    private static final int MAX_SHEARS_PER_DAY = 3;
-    private static final long REST_AFTER_SHEAR_TICKS = 2000L;
+    private static final int MAX_SHEARS_PER_DAY = 6;
+    private static final long REST_AFTER_SHEAR_TICKS = 1000L;
 
     private static final Map<ShepherdKey, ShepherdWorkState> WORK_STATES = new HashMap<>();
 

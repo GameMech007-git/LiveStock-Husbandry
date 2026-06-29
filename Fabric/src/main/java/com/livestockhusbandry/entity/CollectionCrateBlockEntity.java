@@ -5,18 +5,19 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -45,30 +46,46 @@ public class CollectionCrateBlockEntity extends RandomizableContainerBlockEntity
             return;
         }
 
-        BlockPos nestPos = pos.above();
-        BlockState nestState = level.getBlockState(nestPos);
+        BlockPos nestPos = findNestAbove(level, pos);
 
-        if (!(nestState.getBlock() instanceof ChickenNestBlock)) {
+        if (nestPos == null) {
             return;
         }
 
         AABB collectBox = new AABB(nestPos);
 
-        List<ItemEntity> eggEntities = level.getEntitiesOfClass(
+        List<ItemEntity> itemEntities = level.getEntitiesOfClass(
                 ItemEntity.class,
                 collectBox,
-                entity -> entity.isAlive() && entity.getItem().is(Items.EGG)
+                Entity::isAlive
         );
 
-        for (ItemEntity eggEntity : eggEntities) {
-            ItemStack remaining = crate.insertStack(eggEntity.getItem());
+        for (ItemEntity itemEntity : itemEntities) {
+            ItemStack remaining = crate.insertStack(itemEntity.getItem());
 
             if (remaining.isEmpty()) {
-                eggEntity.discard();
+                itemEntity.discard();
             } else {
-                eggEntity.setItem(remaining);
+                itemEntity.setItem(remaining);
             }
         }
+    }
+
+    @Nullable
+    private static BlockPos findNestAbove(Level level, BlockPos cratePos) {
+        BlockPos directlyAbove = cratePos.above();
+
+        if (level.getBlockState(directlyAbove).getBlock() instanceof ChickenNestBlock) {
+            return directlyAbove;
+        }
+
+        BlockPos twoAbove = cratePos.above(2);
+
+        if (level.getBlockState(twoAbove).getBlock() instanceof ChickenNestBlock) {
+            return twoAbove;
+        }
+
+        return null;
     }
 
     private ItemStack insertStack(ItemStack stack) {

@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "#minecraft:logs",
+    "#minecraft:logs",
+    "#minecraft:logs",
+    "#minecraft:logs"
+  ],
+  "result": {
+    "count": 4,
+    "id": "livestockhusbandry:trough"
+  }
+}

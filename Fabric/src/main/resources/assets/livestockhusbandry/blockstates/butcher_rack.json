@@ -1,5 +1,19 @@
 {
   "variants": {
-    "": { "model": "livestockhusbandry:block/butcher_rack" }
+    "facing=north": {
+      "model": "livestockhusbandry:block/butcher_rack"
+    },
+    "facing=east": {
+      "model": "livestockhusbandry:block/butcher_rack",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "livestockhusbandry:block/butcher_rack",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "livestockhusbandry:block/butcher_rack",
+      "y": 270
+    }
   }
 }

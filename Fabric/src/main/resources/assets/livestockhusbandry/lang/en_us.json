@@ -3,5 +3,11 @@
   "item.livestockhusbandry.collection_crate": "Collection Crate",
   "container.livestockhusbandry.collection_crate": "Collection Crate",
   "item.livestockhusbandry.chicken_feeder": "Chicken Feeder",
-  "block.livestockhusbandry.sheep_trough": "Sheep Trough"
+  "item.livestockhusbandry.trough": "Trough",
+
+  "item.livestockhusbandry.shepherd_rack": "Shepherd Rack",
+  "container.livestockhusbandry.shepherd_rack": "Shepherd Rack",
+
+  "item.livestockhusbandry.butcher_rack": "Butcher Rack",
+  "container.livestockhusbandry.butcher_rack": "Butcher Rack"
 }
